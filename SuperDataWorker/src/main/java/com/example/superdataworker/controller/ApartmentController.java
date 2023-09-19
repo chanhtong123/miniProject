@@ -29,10 +29,10 @@ public class ApartmentController {
         return apartmentRepository.getAllApartment();
     }
 
-    @PostMapping("/import")
-    public ResponseEntity<String> importCustomersFromCSV(@RequestParam("csvFile") MultipartFile csvFile) {
+    @PostMapping("/uploadFile")
+    public ResponseEntity<String> uploadFileCustomersFromCSV(@RequestParam("csvFile") MultipartFile csvFile) {
         try {
-            apartmentService.importApartmentsFromCSV(csvFile);
+            apartmentService.uploadFileApartmentsFromCSV(csvFile);
             return ResponseEntity.status(HttpStatus.OK).body("Dữ liệu đã được nhập thành công từ tệp CSV vào table Apartment.");
         } catch (Exception e) {
             e.printStackTrace();

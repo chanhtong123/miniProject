@@ -1,7 +1,6 @@
 package com.example.superdataworker.service;
 
 import com.example.superdataworker.model.Contract;
-import com.example.superdataworker.model.Customer;
 import com.example.superdataworker.repository.ContractRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
@@ -25,7 +24,7 @@ public class ContractService {
     }
 
     @Transactional
-    public void importContractsFromCSV(MultipartFile csvFile) throws IOException {
+    public void uploadFileContractsFromCSV(MultipartFile csvFile) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(csvFile.getInputStream(), StandardCharsets.UTF_8);
              CSVReader csvReader = new CSVReader(reader)) {
 

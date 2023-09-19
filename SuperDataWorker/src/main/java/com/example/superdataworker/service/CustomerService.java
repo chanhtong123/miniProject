@@ -4,10 +4,6 @@ import com.example.superdataworker.model.Customer;
 import com.example.superdataworker.repository.CustomerRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -37,7 +30,7 @@ public class CustomerService {
 
 
     @Transactional
-    public ResponseEntity<String> importCustomersFromCSV(MultipartFile csvFile) throws IOException {
+    public ResponseEntity<String> uploadFileCustomersFromCSV(MultipartFile csvFile) throws IOException {
         List<String> errorMessages = new ArrayList<>(); // Danh sách thông báo lỗi
 
         try (InputStreamReader reader = new InputStreamReader(csvFile.getInputStream(), StandardCharsets.UTF_8);

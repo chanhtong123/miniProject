@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -39,10 +38,10 @@ public class CustomerController {
     }
 
 
-    @PostMapping("/import")
-    public ResponseEntity<String> importCustomersFromCSV(@RequestParam("csvFile") MultipartFile csvFile) {
+    @PostMapping("/uploadFile")
+    public ResponseEntity<String> uploadFileCustomersFromCSV(@RequestParam("csvFile") MultipartFile csvFile) {
         try {
-            ResponseEntity<String> response = customerService.importCustomersFromCSV(csvFile);
+            ResponseEntity<String> response = customerService.uploadFileCustomersFromCSV(csvFile);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             e.printStackTrace();

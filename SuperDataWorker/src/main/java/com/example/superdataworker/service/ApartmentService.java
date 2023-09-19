@@ -25,7 +25,7 @@ public class ApartmentService {
 
 
     @Transactional
-    public void importApartmentsFromCSV(MultipartFile csvFile) throws IOException {
+    public void uploadFileApartmentsFromCSV(MultipartFile csvFile) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(csvFile.getInputStream(), StandardCharsets.UTF_8);
              CSVReader csvReader = new CSVReader(reader)) {
 

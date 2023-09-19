@@ -30,10 +30,10 @@ public class ContractController {
         return contractRepository.getAllContract();
     }
 
-    @PostMapping("/import")
-    public ResponseEntity<String> importCustomersFromCSV(@RequestParam("csvFile") MultipartFile csvFile) {
+    @PostMapping("/uploadFile")
+    public ResponseEntity<String> uploadFileCustomersFromCSV(@RequestParam("csvFile") MultipartFile csvFile) {
         try {
-            contractService.importContractsFromCSV(csvFile);
+            contractService.uploadFileContractsFromCSV(csvFile);
             return ResponseEntity.status(HttpStatus.OK).body("Dữ liệu đã được nhập thành công từ tệp CSV vào table Contract.");
         } catch (Exception e) {
             e.printStackTrace();

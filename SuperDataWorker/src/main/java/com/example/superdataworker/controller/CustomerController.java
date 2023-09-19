@@ -30,7 +30,6 @@ public class CustomerController {
     }
 
 
-
     @PostMapping("/create")
     public Customer createCustomer(@RequestBody Customer customer) {
         // Lưu thông tin khách hàng vào cơ sở dữ liệu sử dụng Repository
@@ -40,12 +39,11 @@ public class CustomerController {
     }
 
 
-
     @PostMapping("/import")
     public ResponseEntity<String> importCustomersFromCSV(@RequestParam("csvFile") MultipartFile csvFile) {
         try {
-            customerService.importCustomersFromCSV(csvFile);
-            return ResponseEntity.status(HttpStatus.OK).body("Dữ liệu đã được nhập thành công từ tệp CSV vào table Customer.");
+            ResponseEntity<String> response = customerService.importCustomersFromCSV(csvFile);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi nhập dữ liệu từ tệp CSV vào table Customer: " + e.getMessage());
@@ -53,7 +51,7 @@ public class CustomerController {
     }
 
     @PostMapping("/searchByName")
-    public List<Customer> searchByFirstName(@RequestParam String name){
+    public List<Customer> searchByFirstName(@RequestParam String name) {
         return customerRepository.searchCustomersByName(name);
     }
 }

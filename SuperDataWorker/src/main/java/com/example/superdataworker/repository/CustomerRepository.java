@@ -81,4 +81,15 @@ public class CustomerRepository {
         }
     }
 
+
+    @Transactional
+    public boolean existsByCustomerId(String customerId) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Long> query = session.createQuery("SELECT COUNT(*) FROM Customer WHERE customerId = :customerId", Long.class);
+            query.setParameter("customerId", customerId);
+            Long count = query.uniqueResult();
+            return count != null && count > 0;
+        }
+    }
+
 }

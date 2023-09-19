@@ -1,15 +1,15 @@
 package com.example.superdataworker.controller;
 
+import com.example.superdataworker.model.Apartment;
 import com.example.superdataworker.repository.ApartmentRepository;
 import com.example.superdataworker.service.ApartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/apartment")
@@ -22,6 +22,11 @@ public class ApartmentController {
     public ApartmentController(ApartmentRepository apartmentRepository, ApartmentService apartmentService) {
         this.apartmentRepository = apartmentRepository;
         this.apartmentService = apartmentService;
+    }
+
+    @GetMapping("/getAllApartment")
+    public List<Apartment> getAllApartment(){
+        return apartmentRepository.getAllApartment();
     }
 
     @PostMapping("/import")

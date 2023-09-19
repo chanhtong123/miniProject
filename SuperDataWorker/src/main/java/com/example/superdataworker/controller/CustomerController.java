@@ -52,5 +52,8 @@ public class CustomerController {
         }
     }
 
-
+    @PostMapping("/searchByName")
+    public List<Customer> searchByFirstName(@RequestParam String name){
+        return customerRepository.searchCustomersByName(name);
+    }
 }

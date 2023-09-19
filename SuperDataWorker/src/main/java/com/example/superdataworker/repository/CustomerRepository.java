@@ -3,10 +3,12 @@ package com.example.superdataworker.repository;
 import com.example.superdataworker.model.Customer;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -64,4 +66,19 @@ public class CustomerRepository {
             return session.createQuery("FROM Customer", Customer.class).list();
         }
     }
+
+    @Transactional
+    public List<Customer> searchCustomersByName(String name) {
+        try (Session session = sessionFactory.openSession()) {
+            if (name != null && !name.isEmpty()) {
+                Query<Customer> query = session.createQuery("FROM Customer WHERE firstName LIKE :name", Customer.class);
+                query.setParameter("name", "%" + name + "%"); // Sử dụng ký tự '%' để tìm kiếm bất kỳ ký tự nào
+                return query.list();
+            } else {
+                // Trả về danh sách trống nếu name là null hoặc trống trơn
+                return Collections.emptyList();
+            }
+        }
+    }
+
 }

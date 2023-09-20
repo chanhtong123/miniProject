@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container my-2">
+    <div class="container mt-5">
+        <form th:action="@{/upload-apartment}" method="post" enctype="multipart/form-data">
+            <input type="file" name="csvFile" accept=".csv" required>
+            <button type="submit">Upload</button>
+        </form>
+    </div>
+    <div class="container mt-5">
+        <!-- Hiển thị thông báo thành công nếu có -->
+        <div th:if="${successMessageA}" class="alert alert-success" th:text="${successMessageA}"></div>
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${errorMessageA}" class="alert alert-danger" th:text="${errorMessageA}"></div>
+
+    </div>
+    <table class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Address</th>
+            <th>Rental price</th>
+            <th>Number of rooms</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="apartment : ${listApartments} ">
+            <td th:text="${apartment.apartmentId}"></td>
+            <td th:text="${apartment.address}"></td>
+            <td th:text="${apartment.rentalPrice}"></td>
+            <td th:text="${apartment.numberOfRoom}"></td>
+
+        </tr>
+        </tbody>
+    </table>
+    <div class="container mt-5">
+        <form th:action="@{/upload-customer}" method="post" enctype="multipart/form-data">
+            <input type="file" name="csvFile" accept=".csv" required>
+            <button type="submit">Upload</button>
+        </form>
+    </div>
+    <div class="container mt-5">
+        <!-- Hiển thị thông báo thành công nếu có -->
+        <div th:if="${successMessageB}" class="alert alert-success" th:text="${successMessageB}"></div>
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${errorMessageB}" class="alert alert-danger" th:text="${errorMessageB}"></div>
+
+    </div>
+    <table class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>first name</th>
+            <th>last name</th>
+            <th>address</th>
+            <th>age</th>
+            <th>status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customer : ${listCustomers} ">
+            <td th:text="${customer.customerId}"></td>
+            <td th:text="${customer.firstName}"></td>
+            <td th:text="${customer.lastName}"></td>
+            <td th:text="${customer.address}"></td>
+            <td th:text="${customer.age}"></td>
+            <td th:text="${customer.status}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="container mt-5">
+        <form th:action="@{/upload-contract}" method="post" enctype="multipart/form-data">
+            <input type="file" name="csvFile" accept=".csv" required>
+            <button type="submit">Upload</button>
+        </form>
+    </div>
+    <div class="container mt-5">
+        <!-- Hiển thị thông báo thành công nếu có -->
+        <div th:if="${successMessageC}" class="alert alert-success" th:text="${successMessageC}"></div>
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${errorMessageC}" class="alert alert-danger" th:text="${errorMessageC}"></div>
+
+    </div>
+    <table class="table table-striped table-responsive-md">
+        <thead>
+        <tr>
+            <th>Contract ID</th>
+            <th>Customer ID</th>
+            <th>Apartment ID</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="contract : ${ListContracts} ">
+            <td th:text="${contract.contractId}"></td>
+            <td th:text="${contract.customerId}"></td>
+            <td th:text="${contract.apartmentId}"></td>
+            <td th:text="${contract.startDate}"></td>
+            <td th:text="${contract.endDate}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

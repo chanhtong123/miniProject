@@ -1,13 +1,16 @@
 package com.example.superdataworker.services;
 
+import com.example.superdataworker.model.Contract;
 import com.example.superdataworker.models.Apartment;
 import com.example.superdataworker.models.Contract;
 import com.example.superdataworker.models.Customer;
+import com.example.superdataworker.repository.ContractRepository;
 import com.example.superdataworker.repositorys.ApartmentRepository;
 import com.example.superdataworker.repositorys.ContractRepository;
 import com.example.superdataworker.repositorys.CustomerRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,16 +20,21 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
-public class ContractService {
-    private final ContractRepository contractRepository;
-    private final CustomerRepository customerRepository;
-    private final ApartmentRepository apartmentRepository;
+public class ContractServiceImpl implements ContractService {
+
+    @Autowired
+    private ContractRepository contractRepository;
+    private CustomerRepository customerRepository;
+    private ApartmentRepository apartmentRepository;
 
     public ContractService(ContractRepository contractRepository, CustomerRepository customerRepository, ApartmentRepository apartmentRepository) {
         this.contractRepository = contractRepository;
@@ -35,7 +43,7 @@ public class ContractService {
     }
 
 
-    public List<Contract> getAllContract(){
+    public List<Contract> getAllContracts(){
         return contractRepository.findAll();
     }
     public Contract save(Contract contract){

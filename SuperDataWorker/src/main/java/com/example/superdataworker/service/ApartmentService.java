@@ -27,7 +27,7 @@ public class ApartmentService {
         this.apartmentRepository = apartmentRepository;
     }
 
-    public List<Apartment> getAllApartment(){
+    public List<Apartment> getAllApartments(){
         return apartmentRepository.findAll();
     }
 

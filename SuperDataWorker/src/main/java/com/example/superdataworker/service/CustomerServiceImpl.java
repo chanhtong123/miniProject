@@ -1,6 +1,8 @@
 package com.example.superdataworker.services;
 
+import com.example.superdataworker.model.Customer;
 import com.example.superdataworker.models.Customer;
+import com.example.superdataworker.repository.CustomerRepository;
 import com.example.superdataworker.repositorys.CustomerRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
@@ -18,28 +20,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-
-public class CustomerService {
-    private final CustomerRepository customerRepository;
+public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
+    private CustomerRepository customerRepository;
 
+    @Override
     public List<Customer> getAllCustomers(){
         return customerRepository.findAll();
     }
-
+    @Override
     public Customer save(Customer customer){
         return customerRepository.save(customer);
     }
-
+    @Override
     public List<Customer> searchByName(String name){
         return customerRepository.findByFirstNameStartingWithOrLastNameStartingWith(name,name);
     }
 
     @Transactional
+    @Override
     public ResponseEntity<String> uploadFileCustomersFromCSV(MultipartFile csvFile) throws IOException {
         List<String> errorMessages = new ArrayList<>();
 
@@ -125,7 +125,6 @@ public class CustomerService {
 
         return ResponseEntity.ok("upload file success.");
     }
-
 
 
 }

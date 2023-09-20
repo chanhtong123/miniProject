@@ -1,8 +1,8 @@
-package com.example.superdataworker.controller;
+package com.example.superdataworker.controllers;
 
-import com.example.superdataworker.model.Contract;
-import com.example.superdataworker.repository.ContractRepository;
-import com.example.superdataworker.service.ContractService;
+import com.example.superdataworker.models.Contract;
+import com.example.superdataworker.repositorys.ContractRepository;
+import com.example.superdataworker.services.ContractService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,19 +25,19 @@ public class ContractController {
     }
 
 
-    @GetMapping("/getAllContract")
+    @GetMapping("/get-all-contract")
     public List<Contract> getAllContract(){
-        return contractRepository.getAllContract();
+        return contractService.getAllContract();
     }
 
-    @PostMapping("/uploadFile")
+    @PostMapping("/up-load-file")
     public ResponseEntity<String> uploadFileCustomersFromCSV(@RequestParam("csvFile") MultipartFile csvFile) {
         try {
-            contractService.uploadFileContractsFromCSV(csvFile);
-            return ResponseEntity.status(HttpStatus.OK).body("Dữ liệu đã được nhập thành công từ tệp CSV vào table Contract.");
+            ResponseEntity<String> response = contractService.uploadFileContractsFromCSV(csvFile);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi nhập dữ liệu từ tệp CSV vào table Contract: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error" + e.getMessage());
         }
     }
 }

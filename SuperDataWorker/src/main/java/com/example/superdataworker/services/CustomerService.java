@@ -1,7 +1,7 @@
-package com.example.superdataworker.service;
+package com.example.superdataworker.services;
 
-import com.example.superdataworker.model.Customer;
-import com.example.superdataworker.repository.CustomerRepository;
+import com.example.superdataworker.models.Customer;
+import com.example.superdataworker.repositorys.CustomerRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,73 +27,82 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
+    public List<Customer> getAllCustomers(){
+        return customerRepository.findAll();
+    }
 
+    public Customer save(Customer customer){
+        return customerRepository.save(customer);
+    }
+
+    public List<Customer> searchByName(String name){
+        return customerRepository.findByFirstNameStartingWithOrLastNameStartingWith(name,name);
+    }
 
     @Transactional
     public ResponseEntity<String> uploadFileCustomersFromCSV(MultipartFile csvFile) throws IOException {
-        List<String> errorMessages = new ArrayList<>(); // Danh sách thông báo lỗi
+        List<String> errorMessages = new ArrayList<>();
 
         try (InputStreamReader reader = new InputStreamReader(csvFile.getInputStream(), StandardCharsets.UTF_8);
              CSVReader csvReader = new CSVReader(reader)) {
 
             String[] nextLine;
-            csvReader.skip(1); // Bỏ qua dòng tiêu đề
+            csvReader.skip(1);
 
             while ((nextLine = csvReader.readNext()) != null) {
                 String customerId = nextLine[0];
-                String firstName = nextLine[1];
-                String lastName = nextLine[2];
-                String address = nextLine[3];
-                String ageStr = nextLine[4];
+                String address = nextLine[1];
+                String ageStr = nextLine[2];
+                String firstName = nextLine[3];
+                String lastName = nextLine[4];
                 String status = nextLine[5];
 
-                // Kiểm tra nếu có bất kỳ trường nào là null thì thêm thông báo lỗi vào danh sách
-                if (customerId == null) {
-                    errorMessages.add("Trường CustomerID trống.");
+
+                if (customerId == null || customerId.isEmpty()) {
+                    errorMessages.add("CustomerID empty.");
                 }
                 if (firstName == null || firstName.isEmpty()) {
-                    errorMessages.add("Trường FirstName trống.");
+                    errorMessages.add("FirstName empty.");
                 }
                 if (lastName == null || lastName.isEmpty()) {
-                    errorMessages.add("Trường LastName trống.");
+                    errorMessages.add("LastName empty.");
                 }
                 if (address == null) {
-                    errorMessages.add("Trường Address trống.");
+                    errorMessages.add("Address empty.");
                 }
                 if (ageStr == null) {
-                    errorMessages.add("Trường Age trống.");
+                    errorMessages.add("Age empty.");
                 }
                 if (status == null) {
-                    errorMessages.add("Trường Status trống.");
+                    errorMessages.add("Status empty.");
                 }
 
-                // Kiểm tra giá trị age
+
                 int age = 0;
                 try {
                     age = Integer.parseInt(ageStr);
                     if (age < 1 || age > 150) {
-                        errorMessages.add("Giá trị tuổi không hợp lệ.");
+                        errorMessages.add("Invalid age value.");
                     }
                 } catch (NumberFormatException e) {
-                    errorMessages.add("Giá trị tuổi không hợp lệ.");
+                    errorMessages.add("Invalid age value.");
                 }
 
-                // Kiểm tra giá trị status
+
                 if (!status.equals("Active") && !status.equals("Inactive")) {
-                    errorMessages.add("Trạng thái không hợp lệ.");
+                    errorMessages.add("Invalid status value.");
                 }
 
-                // Kiểm tra trùng lặp với CustomerID trong database
-                if (customerRepository.existsByCustomerId(customerId)) {
-                    errorMessages.add("Trùng lặp CustomerID.");
+                if (customerRepository.existsById(customerId)) {
+                    errorMessages.add("CustomerID existed.");
                 }
 
-                // Nếu có lỗi trong dòng CSV, tiếp tục đọc các dòng khác
+
                 if (!errorMessages.isEmpty()) {
                     continue;
                 }
 
-                // Tạo đối tượng Customer và lưu vào cơ sở dữ liệu
+
                 Customer customer = new Customer();
                 customer.setCustomerId(customerId);
                 customer.setFirstName(firstName);
@@ -102,19 +111,19 @@ public class CustomerService {
                 customer.setAge(age);
                 customer.setStatus(status);
 
-                customerRepository.createCustomer(customer);
+                customerRepository.save(customer);
             }
         } catch (CsvValidationException e) {
             throw new RuntimeException(e);
         }
 
-        // Nếu danh sách thông báo lỗi không trống, trả về lỗi
+
         if (!errorMessages.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.join("\n", errorMessages));
         }
 
-        // Trả về thành công nếu không có lỗi
-        return ResponseEntity.ok("Nhập dữ liệu thành công.");
+
+        return ResponseEntity.ok("upload file success.");
     }
 
 

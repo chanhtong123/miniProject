@@ -1,2 +1,2 @@
-"CustomerId 	   	","FirstName 	","LastName 	","Address 	",Age ,Status
-3,,,thuduc,22,Active
+"customer_id 	   	","address 	",age,first_name,last_name,status
+SE1,thu duc,23,em,duc,Active

@@ -1,10 +1,10 @@
-package com.example.superdataworker.controllers;
+package com.example.superdataworker.controller;
 
-import com.example.superdataworker.models.Customer;
+import com.example.superdataworker.model.Customer;
 import com.example.superdataworker.response.ResponseMessage;
-import com.example.superdataworker.services.CustomerService;
+import com.example.superdataworker.service.CustomerService;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +19,9 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    private final Logger logger = (Logger) LogManager.getLogger(CustomerController.class);
+    private final Logger logger = LogManager.getLogger(CustomerController.class);
 
-    @GetMapping
+    @GetMapping("/get-all-customers")
     public ResponseEntity<ResponseMessage> getAllCustomers() {
         logger.info("Load all of customer");
         try {
@@ -43,7 +43,7 @@ public class CustomerController {
                     .internalServerError()
                     .body(
                             ResponseMessage.builder()
-                                    .statusCode(500)
+                                    .statusCode(201)
                                     .message(e.getMessage())
                                     .build()
                     );
@@ -51,7 +51,7 @@ public class CustomerController {
     }
 
 
-    @PostMapping
+    @PostMapping("/upload")
     public ResponseEntity<String> uploadFileCustomersFromCSV(@RequestParam("csvFile") MultipartFile csvFile) {
         try {
             ResponseEntity<String> response = customerService.uploadFileCustomersFromCSV(csvFile);
@@ -62,7 +62,7 @@ public class CustomerController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/search-name")
     public List<Customer> searchByFirstName(@RequestParam String name) {
         return customerService.searchByName(name);
     }

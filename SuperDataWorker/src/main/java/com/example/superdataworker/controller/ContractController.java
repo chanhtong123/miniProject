@@ -1,11 +1,12 @@
-package com.example.superdataworker.controllers;
+package com.example.superdataworker.controller;
 
-import com.example.superdataworker.models.Contract;
+import com.example.superdataworker.model.Contract;
 import com.example.superdataworker.response.ResponseMessage;
-import com.example.superdataworker.services.ContractService;
+import com.example.superdataworker.service.ContractService;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,10 +20,10 @@ public class ContractController {
     @Autowired
     private ContractService contractService;
 
-    private final Logger logger = (Logger) LogManager.getLogger(CustomerController.class);
+    private final Logger logger = LogManager.getLogger(CustomerController.class);
 
-    @GetMapping
-    public ResponseEntity<ResponseMessage> getAllCustomers() {
+    @GetMapping("get-all-contracts")
+    public ResponseEntity<ResponseMessage> getAllContracts() {
         logger.info("Load all of contracts");
         try {
             List<Contract> contracts = contractService.getAllContracts();
@@ -43,7 +44,7 @@ public class ContractController {
                     .internalServerError()
                     .body(
                             ResponseMessage.builder()
-                                    .statusCode(500)
+                                    .statusCode(201)
                                     .message(e.getMessage())
                                     .build()
                     );
@@ -51,31 +52,13 @@ public class ContractController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<ResponseMessage> uploadFileCustomersFromCSV(@RequestParam("csvFile") MultipartFile csvFile) {
-        logger.info("Upload contracts");
+    public ResponseEntity<String> uploadFileCustomersFromCSV(@RequestParam("csvFile") MultipartFile csvFile) {
         try {
             ResponseEntity<String> response = contractService.uploadFileContractsFromCSV(csvFile);
-            logger.info("Upload all of contracts from file successfully!!!");
-
-            return ResponseEntity.ok(
-                    ResponseMessage.builder()
-                            .statusCode(200)
-                            .message("Success")
-                            .data(response)
-                            .build()
-
-            );
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
-            logger.error(e.getMessage());
-
-            return ResponseEntity
-                    .internalServerError()
-                    .body(
-                            ResponseMessage.builder()
-                                    .statusCode(500)
-                                    .message(e.getMessage())
-                                    .build()
-                    );
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error" + e.getMessage());
         }
     }
 }

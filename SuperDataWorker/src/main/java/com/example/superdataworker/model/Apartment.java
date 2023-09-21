@@ -1,4 +1,4 @@
-package com.example.superdataworker.models;
+package com.example.superdataworker.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

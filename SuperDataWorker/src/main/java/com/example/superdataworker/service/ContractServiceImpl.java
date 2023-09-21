@@ -1,13 +1,11 @@
-package com.example.superdataworker.services;
+package com.example.superdataworker.service;
 
 import com.example.superdataworker.model.Contract;
-import com.example.superdataworker.models.Apartment;
-import com.example.superdataworker.models.Contract;
-import com.example.superdataworker.models.Customer;
+import com.example.superdataworker.model.Apartment;
+import com.example.superdataworker.model.Customer;
 import com.example.superdataworker.repository.ContractRepository;
-import com.example.superdataworker.repositorys.ApartmentRepository;
-import com.example.superdataworker.repositorys.ContractRepository;
-import com.example.superdataworker.repositorys.CustomerRepository;
+import com.example.superdataworker.repository.ApartmentRepository;
+import com.example.superdataworker.repository.CustomerRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +18,10 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -33,34 +29,40 @@ public class ContractServiceImpl implements ContractService {
 
     @Autowired
     private ContractRepository contractRepository;
+    @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
     private ApartmentRepository apartmentRepository;
-
-    public ContractService(ContractRepository contractRepository, CustomerRepository customerRepository, ApartmentRepository apartmentRepository) {
-        this.contractRepository = contractRepository;
-        this.customerRepository = customerRepository;
-        this.apartmentRepository = apartmentRepository;
-    }
-
-
+    @Override
     public List<Contract> getAllContracts(){
         return contractRepository.findAll();
     }
+    @Override
     public Contract save(Contract contract){
         return contractRepository.save(contract);
     }
 
     @Transactional
+    @Override
     public ResponseEntity<String> uploadFileContractsFromCSV(MultipartFile csvFile) throws IOException {
         List<String> errorMessages = new ArrayList<>();
+        List<Contract> validContracts = new ArrayList<>();
+        int lineNumber = 1; // Số dòng bắt đầu từ 1
 
         try (InputStreamReader reader = new InputStreamReader(csvFile.getInputStream(), StandardCharsets.UTF_8);
              CSVReader csvReader = new CSVReader(reader)) {
 
             String[] nextLine;
-            csvReader.skip(1);
+            csvReader.skip(1); // Bỏ qua dòng tiêu đề
 
             while ((nextLine = csvReader.readNext()) != null) {
+                lineNumber++; // Tăng số dòng sau mỗi lần đọc
+
+                if (nextLine.length < 5) {
+                    // Đảm bảo có ít nhất 5 cột trong dòng CSV trước khi truy cập
+                    errorMessages.add("Line " + lineNumber + ": Invalid number of columns in CSV line.");
+                    continue;
+                }
                 String contractId = nextLine[0];
                 String customerId = nextLine[4];
                 String apartmentId = nextLine[3];
@@ -73,38 +75,58 @@ public class ContractServiceImpl implements ContractService {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 LocalDate startDate = null;
                 LocalDate endDate = null;
-                startDate = LocalDate.parse(startDateStr, formatter);
-                endDate = LocalDate.parse(endDateStr, formatter);
 
-                if(contractId == null || contractId.isEmpty()){
-                    errorMessages.add("contracId empty.");
-                }
-                if(startDate == null){
-                    errorMessages.add("startDate empty.");
-                }
-                if(endDate == null){
-                    errorMessages.add("endDate empty.");
-                }
-                if (customer == null){
-                    errorMessages.add("customerId not exist.");
-                }
-                if (apartment ==null){
-                    errorMessages.add("apartmentId not exist.");
-                }
-
-
-                if (!errorMessages.isEmpty()) {
+                try {
+                    startDate = LocalDate.parse(startDateStr, formatter);
+                    endDate = LocalDate.parse(endDateStr, formatter);
+                } catch (DateTimeParseException e) {
+                    errorMessages.add("Line " + lineNumber + ": Invalid date format in CSV line.");
                     continue;
                 }
 
-                Contract contract = new Contract();
-                contract.setContractId(contractId);
-                contract.setCustomer(customer);
-                contract.setApartment(apartment);
-                contract.setStartDate(startDate);
-                contract.setEndDate(endDate);
-                contractRepository.save(contract);
+                // Kiểm tra các điều kiện lỗi
+                boolean hasError = false;
+
+                if (contractId == null || contractId.isEmpty()) {
+                    errorMessages.add("Line " + lineNumber + ": ContractID empty.");
+                    hasError = true;
+                }
+                if (startDate == null) {
+                    errorMessages.add("Line " + lineNumber + ": StartDate empty.");
+                    hasError = true;
+                }
+                if (endDate == null) {
+                    errorMessages.add("Line " + lineNumber + ": EndDate empty.");
+                    hasError = true;
+                }
+                if (customer == null) {
+                    errorMessages.add("Line " + lineNumber + ": CustomerId not exist.");
+                    hasError = true;
+                }
+                if (apartment == null) {
+                    errorMessages.add("Line " + lineNumber + ": ApartmentId not exist.");
+                    hasError = true;
+                }
+
+                assert contractId != null;
+                if (contractRepository.existsById(contractId)) {
+                    errorMessages.add("Line " + lineNumber + ": ContractId existed.\n");
+                    hasError = true;
+                }
+                if (!hasError) {
+                    // Tạo đối tượng Contract và thêm vào danh sách validContracts
+                    Contract contract = new Contract();
+                    contract.setContractId(contractId);
+                    contract.setCustomer(customer);
+                    contract.setApartment(apartment);
+                    contract.setStartDate(startDate);
+                    contract.setEndDate(endDate);
+                    validContracts.add(contract);
+                }
             }
+
+            // Lưu tất cả các hợp đồng hợp lệ vào cơ sở dữ liệu
+            contractRepository.saveAll(validContracts);
         } catch (CsvValidationException e) {
             throw new RuntimeException(e);
         }
@@ -113,7 +135,7 @@ public class ContractServiceImpl implements ContractService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.join("\n", errorMessages));
         }
 
-
-        return ResponseEntity.ok("upload file success.");
+        return ResponseEntity.ok("Upload file success.");
     }
+
 }

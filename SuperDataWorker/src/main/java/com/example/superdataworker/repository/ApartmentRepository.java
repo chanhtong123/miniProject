@@ -1,6 +1,6 @@
-package com.example.superdataworker.repositorys;
+package com.example.superdataworker.repository;
 
-import com.example.superdataworker.models.Apartment;
+import com.example.superdataworker.model.Apartment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

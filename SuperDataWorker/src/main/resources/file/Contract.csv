@@ -1,2 +1,3 @@
-ContractId,EndDate,StartDate,ApartmentId,CostomerId
-1,23/11/2024,22/01/2021,AP1,SE1
+ContractId,EndDate,StartDate,ApartmentId,CustomerId
+3,23/11/2024,22/01/2021,SE7,SE22
+4,23/11/2024,22/01/2021,SE7,SE4

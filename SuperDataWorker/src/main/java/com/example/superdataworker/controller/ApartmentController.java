@@ -1,10 +1,10 @@
-package com.example.superdataworker.controllers;
+package com.example.superdataworker.controller;
 
-import com.example.superdataworker.models.Apartment;
+import com.example.superdataworker.model.Apartment;
 import com.example.superdataworker.response.ResponseMessage;
-import com.example.superdataworker.services.ApartmentService;
+import com.example.superdataworker.service.ApartmentService;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +17,13 @@ import java.util.List;
 @RequestMapping("/apartment")
 public class ApartmentController {
 
-@Autowired
-    private  ApartmentService apartmentService;
+    @Autowired
+    private ApartmentService apartmentService;
 
-    private final Logger logger = (Logger) LogManager.getLogger(CustomerController.class);
+    private final Logger logger = LogManager.getLogger(CustomerController.class);
 
-    @GetMapping
-    public ResponseEntity<ResponseMessage> getAllCustomers() {
+    @GetMapping("/get-all-apartments")
+    public ResponseEntity<ResponseMessage> getAllApartments() {
         logger.info("Load all of contracts");
         try {
             List<Apartment> apartments = apartmentService.getAllApartments();
@@ -44,13 +44,14 @@ public class ApartmentController {
                     .internalServerError()
                     .body(
                             ResponseMessage.builder()
-                                    .statusCode(500)
+                                    .statusCode(201)
                                     .message(e.getMessage())
                                     .build()
                     );
         }
     }
-    @PostMapping("/up-load-file")
+
+    @PostMapping("/upload")
     public ResponseEntity<String> uploadFileCustomersFromCSV(@RequestParam("csvFile") MultipartFile csvFile) {
         try {
             ResponseEntity<String> response = apartmentService.uploadFileApartmentsFromCSV(csvFile);

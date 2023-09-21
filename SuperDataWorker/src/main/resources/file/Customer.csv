@@ -1,2 +1,3 @@
-"customer_id 	   	","address 	",age,first_name,last_name,status
-SE1,thu duc,23,em,duc,Active
+customer_id,address,age,first_name,last_name,status
+SE4,thu duc,23,em,duc,Active
+SE4,thu duc,23,em,duc,Active

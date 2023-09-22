@@ -1,22 +1,307 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" th:href="@{style.css}"/>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .outer {
+            height: 300px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            /* align-items: center; */
+            background: #f2f2f2;
+        }
+
+        .outer_1 {
+            height: 60vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            /* align-items: center; */
+            background: #f2f2f2;
+        }
+
+        #switch:checked ~ .outer {
+            background: #092c3e;
+        }
+
+        #switch:checked ~ .outer_1 {
+            background: #092c3e;
+        }
+
+        .content {
+            margin-top: 20px;
+            /* display: flex; */
+            max-width: 500px;
+            height: 260px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .content_1 {
+            margin-top: 20px;
+            /* display: flex; */
+            width: 1000px;
+            height: 350px;
+            padding: 20px;
+            padding-top: 30px;
+            background: #fff;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        #switch:checked ~ .outer .content {
+            background: #034a6e;
+        }
+
+        #switch:checked ~ .outer_1 .content_1 {
+            background: #034a6e;
+        }
+
+        .outer .toggle {
+            position: absolute;
+            width: 50px;
+            height: 25px;
+            border-radius: 20px;
+            background: #034a6e;
+            right: 15px;
+            top: 13px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .outer_1 .toggle {
+            position: absolute;
+            width: 50px;
+            height: 25px;
+            border-radius: 20px;
+            background: #034a6e;
+            right: 15px;
+            top: 13px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        #switch:checked ~ .outer .toggle {
+            background: #fff;
+        }
+
+        #switch:checked ~ .outer_1 .toggle {
+            background: #fff;
+        }
+
+        .outer .toggle .circle {
+            margin-left: 5px;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        #switch:checked ~ .outer .circle {
+            margin-left: 26px;
+            background: #034a6e;
+        }
+
+        .outer_1 .toggle .circle {
+            margin-left: 5px;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        #switch:checked ~ .outer_1 .circle {
+            margin-left: 26px;
+            background: #034a6e;
+        }
+
+        .image-box {
+            height: 270px;
+            width: 250px;
+            border-radius: 12px;
+            padding: 3px;
+            background: #034a6e;
+        }
+
+        .image-box img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            border-radius: 12px;
+        }
+
+        #switch:checked ~ .outer .image-box {
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        #switch:checked ~ .outer .image-box img {
+            border-color: transparent;
+        }
+
+        #switch:checked ~ .outer_1 .image-box {
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        #switch:checked ~ .outer_1 .image-box img {
+            border-color: transparent;
+        }
+
+        .content .details {
+            width: 58%;
+            margin: 10px 0 20px 40px;
+            color: #092c3e;
+        }
+
+        #switch:checked ~ .outer .details {
+            transition: 0.1s;
+            color: #fff;
+        }
+
+        .content .details .name {
+            font-size: 23px;
+            font-weight: 600;
+        }
+
+        .content .details .job {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .content .details p {
+            font-size: 17px;
+            margin-top: 6px;
+        }
+
+        .content button {
+            display: block;
+            margin-top: 16px;
+            outline: none;
+            border: none;
+            font-size: 17px;
+            padding: 7px 14px;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            background: #092c3e;
+            transition: all 0.3s ease;
+        }
+
+        .content button:hover {
+            transform: scale(0.97);
+        }
+
+        #switch:checked ~ .outer button {
+            background: #fff;
+            color: #092c3e;
+        }
+
+        .media-icons {
+            position: absolute;
+            bottom: 16px;
+            right: 15px;
+            margin-top: 12px;
+            justify-content: flex-end;
+        }
+
+        .media-icons i {
+            display: inline-flex;
+            margin: 0 4px;
+            font-size: 18px;
+            color: #092c3e;
+            opacity: 0.7;
+            cursor: pointer;
+        }
+
+        .media-icons i:hover {
+            opacity: 1;
+        }
+
+        #switch:checked ~ .outer i {
+            color: #fff;
+            opacity: 1;
+        }
+
+        #switch:checked ~ .outer_1 i {
+            color: #fff;
+            opacity: 1;
+        }
+
+        #switch {
+            display: none;
+        }
+
+        /* Màu chữ mặc định */
+        .content_1 table th,
+        .content_1 table td {
+            color: #034a6e; /* Màu chữ mặc định */
+        }
+
+        /* Màu chữ khi nút được kiểm tra */
+        #switch:checked ~ .outer_1 .content_1 table th,
+        #switch:checked ~ .outer_1 .content_1 table td {
+            color: #fff; /* Màu chữ khi nút được kiểm tra */
+        }
+
+        .alert {
+            margin-top: -30px;
+            position: relative;
+            padding: 0.75rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
-    <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="csvFile">Choose a CSV File:</label>
-            <input type="file" class="form-control-file" id="csvFile" name="csvFile" accept=".csv" required>
+<input type="checkbox" id="switch"/>
+<div class="outer">
+    <div class="content">
+        <div class="container mt-5">
+            <label for="switch">
+                        <span class="toggle">
+                          <span class="circle"></span>
+                        </span>
+            </label>
+            <div class="details">
+                <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="csvFile"></label>
+                        <div class="job"> Choose a CSV File:</div>
+                        <input type="file" class="form-control-file" id="csvFile" name="csvFile" accept=".csv"
+                               required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Upload</button>
-    </form>
+    </div>
 </div>
 <div class="container mt-5">
     <div th:if="${errorMessages != null}" class="alert alert-danger">
@@ -24,70 +309,91 @@
     </div>
 </div>
 
-<div class="container my-2">
+<div class="outer_1">
+    <div class="content_1">
 
-    <table class="table table-striped table-responsive-md">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Address</th>
-            <th>Rental price</th>
-            <th>Number of rooms</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="apartment : ${listApartments} ">
-            <td th:text="${apartment.apartmentId}"></td>
-            <td th:text="${apartment.address}"></td>
-            <td th:text="${apartment.rentalPrice}"></td>
-            <td th:text="${apartment.numberOfRoom}"></td>
+        <div class="container my-2">
 
-        </tr>
-        </tbody>
-    </table>
-    <table class="table table-striped table-responsive-md">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>first name</th>
-            <th>last name</th>
-            <th>address</th>
-            <th>age</th>
-            <th>status</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="customer : ${listCustomers} ">
-            <td th:text="${customer.customerId}"></td>
-            <td th:text="${customer.firstName}"></td>
-            <td th:text="${customer.lastName}"></td>
-            <td th:text="${customer.address}"></td>
-            <td th:text="${customer.age}"></td>
-            <td th:text="${customer.status}"></td>
-        </tr>
-        </tbody>
-    </table>
+            <table class="table table-striped table-responsive-md">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Address</th>
+                    <th>Rental price</th>
+                    <th>Number of rooms</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="apartment : ${listApartments} ">
+                    <td th:text="${apartment.apartmentId}"></td>
+                    <td th:text="${apartment.address}"></td>
+                    <td th:text="${apartment.rentalPrice}"></td>
+                    <td th:text="${apartment.numberOfRoom}"></td>
 
-    <table class="table table-striped table-responsive-md">
-        <thead>
-        <tr>
-            <th>Contract ID</th>
-            <th>Customer ID</th>
-            <th>Apartment ID</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="contract : ${ListContracts} ">
-            <td th:text="${contract.contractId}"></td>
-            <td th:text="${contract.customer.customerId}"></td>
-            <td th:text="${contract.apartment.apartmentId}"></td>
-            <td th:text="${contract.startDate}"></td>
-            <td th:text="${contract.endDate}"></td>
-        </tr>
-        </tbody>
-    </table>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+<div class="outer_1">
+    <div class="content_1">
+
+        <div class="container my-2">
+            <table class="table table-striped table-responsive-md">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>first name</th>
+                    <th>last name</th>
+                    <th>address</th>
+                    <th>age</th>
+                    <th>status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="customer : ${listCustomers} ">
+                    <td th:text="${customer.customerId}"></td>
+                    <td th:text="${customer.firstName}"></td>
+                    <td th:text="${customer.lastName}"></td>
+                    <td th:text="${customer.address}"></td>
+                    <td th:text="${customer.age}"></td>
+                    <td th:text="${customer.status}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="outer_1">
+    <div class="content_1">
+
+        <div class="container my-2">
+
+            <table class="table table-striped table-responsive-md">
+                <thead>
+                <tr>
+                    <th>Contract ID</th>
+                    <th>Customer ID</th>
+                    <th>Apartment ID</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="contract : ${ListContracts} ">
+                    <td th:text="${contract.contractId}"></td>
+                    <td th:text="${contract.customer.customerId}"></td>
+                    <td th:text="${contract.apartment.apartmentId}"></td>
+                    <td th:text="${contract.startDate}"></td>
+                    <td th:text="${contract.endDate}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 </body>
+
 </html>
